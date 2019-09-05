@@ -6,14 +6,18 @@ export interface ContainerProviderProps<State = void> {
 }
 
 export interface Container<Value, State = void> {
+	Context
+	Consumer
 	Provider: React.ComponentType<ContainerProviderProps<State>>
 	useContainer: () => Value
+	connect
 }
 
 export function createContainer<Value, State = void>(
 	useHook: (initialState?: State) => Value,
 ): Container<Value, State> {
 	let Context = React.createContext<Value | null>(null)
+	let Consumer = Context.Consumer
 
 	function Provider(props: ContainerProviderProps<State>) {
 		let value = useHook(props.initialState)
@@ -28,7 +32,15 @@ export function createContainer<Value, State = void>(
 		return value
 	}
 
-	return { Provider, useContainer }
+	let connect = mapper => SuperComponent => {
+		return props => (
+			<Consumer>
+				{context => <SuperComponent {...props} {...mapper(context)} />}
+			</Consumer>
+		)
+	}
+
+	return { Context, Consumer, Provider, useContainer, connect }
 }
 
 export function useContainer<Value, State = void>(

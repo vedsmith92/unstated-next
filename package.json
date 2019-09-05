@@ -12,7 +12,7 @@
 	"scripts": {
 		"format": "prettier --write '**'",
 		"example": "parcel example/index.html --out-dir example/dist",
-		"build": "rm -rf dist && microbundle --external react --globals react=React --strict --no-compress",
+		"build": "rm -rf dist && microbundle --external react --globals react=React --no-compress",
 		"test": "ava"
 	},
 	"keywords": [],
